@@ -1,0 +1,91 @@
+{% extends "base.html" %} 
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+    <h1 align="center">Hello {{ current_user.username.upper() }}!</h1>
+    <p align="center">💰 Current Balance: {{ balance }}</p>
+
+    <button onclick="toggleForm()" id="toggleBtn">➕ Add Transaction</button>
+
+    <div id="addForm" style="display:none; margin-top: 10px; border: 1px solid #ccc ; padding: 15px">
+    <form method="POST" action="{{ url_for('views.home') }}">
+
+        <label for="date">Date:</label>
+        <input type="date" name="date" required>
+        
+        <label for="txn">Type:</label>
+        <select name="txn" required>
+            <option value="CREDIT">Credit</option>
+            <option value="DEBIT">Debit</option>
+        </select>
+        
+        <label for="amount">Amount:</label>
+        <input type="number" step="0.01" name="amount" placeholder="Amount" required>
+        
+
+        <label for="category_id">Category:</label>
+        <select name="category_id">
+            {% for cat in categories %}
+                <option value="{{ cat.id }}">{{ cat.name }}</option>
+            {% endfor %}
+        </select>
+
+
+        <label for="note">Note:</label>
+        <input type="text" name="note" placeholder="Note">
+        
+        <input type="submit" value="Submit">
+    </form>
+    </div>
+
+    <table width="100%">
+        <caption><b>All Transactions</b></caption>
+        <tr>
+            <th>ID</th>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Category</th>
+            <th>Note</th>
+            <th>Actions</th>
+        </tr>
+        {% for t in transaction %}
+        <tr>
+            <th>{{ t.id }}</th>
+            <th>{{ t.txn_date.strftime('%d-%m-%Y') if t.txn_date else '' }}</th>
+            <th>{{ t.txn }}</th>
+            <th>{{ t.amount }}</th>
+            <th>{{ t.category.name }}</th>
+            <th>{{ t.note }}</th>
+            <th>
+                <a href="/edit/{{ t.id }}">Edit</a>
+                <a href="/delete/{{ t.id }}">Delete</a>
+            </th>
+        </tr>
+        {% endfor %}
+    </table>
+
+
+
+    <script>
+        function toggleForm(){
+            let form = document.getElementById("addForm");
+            let btn = document.getElementById("toggleBtn");
+
+            if (form.style.display === "none"){
+                form.style.display = "block";
+                btn.textContent = "➖ Hide Form";
+            }
+            else {
+                form.style.display = "none";
+                btn.textContent = "➕ Add Transaction";
+            }
+        }
+    </script>
+
+
+
+
+{% endblock %}
