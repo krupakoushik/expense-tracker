@@ -66,7 +66,7 @@ def home():
         return redirect(url_for('views.home'))
 
     categories = Category.query.filter_by(user_id=current_user.id).all()
-    return render_template('home.html', transaction=transactions, categories=categories, balance=balance, user=current_user)
+    return render_template('index.html', transaction=transactions, categories=categories, balance=balance, user=current_user)
 
 @views.route('/categories', methods=['GET', 'POST'])
 @login_required

@@ -57,14 +57,12 @@
     {% if messages %}
         {% for category, message in messages %}
             {% if category == "success" %}
-                <div class="alert alert-success" role="alert">
+                <div class="alert alert-{{ category }} mt-2" role="alert">
                     <strong>{{ category.upper() }}:</strong> {{ message }}
-                    <span onclick="delete_flash(this)" style="position: absolute; right: 8px; align-items: center; cursor: pointer;"><button type="button" class="btn-close" aria-label="Close"></button></span>
                 </div>
             {% else %}
                 <div class="alert alert-danger" role="alert">
                     <strong>{{ category.upper() }}:</strong> {{ message }}
-                    <span onclick="delete_flash(this)" style="position: absolute; right: 8px; align-items: center; cursor: pointer;"><button type="button" class="btn-close" aria-label="Close"></button></span>
                 </div>
             {% endif %}
         {% endfor %}
@@ -82,13 +80,11 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     
     <script>
-    function delete_flash(flash){
         $(document).ready(function() {
-        $(flash).delay(3000).fadeOut(500, function() {
-            $(this).remove(); // Remove the element after fading out
+            $(".alert").delay(3000).fadeOut(500, function() {
+                $(this).remove();
+            });
         });
-    });
-    }
     </script>
 </body>
 </html>
