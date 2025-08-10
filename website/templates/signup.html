@@ -6,21 +6,43 @@
 
 <form method="POST">
     
-    <h2 align="center">Sign-Up</h2>
+    <h2 align="center">Register</h2>
     
-    <label for="username">Username: </label>
-    <input type="text" id="username" name="username" required><br><br>
-    
-    <label for="email">Email: </label>
-    <input type="email" id="email" name="email" required><br><br>
-    
-    <label for="password">Password: </label>
-    <input type="password" id="password" name="password" required><br><br>
-    
-    <label for="cpass">Confirm Password: </label>
-    <input type="password" id="cpass" name="cpass" required><br><br>
+    <div class="d-grid">
+        <div class="mb-3">
+        <label for="exampleFormControlInput2" class="form-label">Username</label>
+        <input type="text" class="form-control" id="exampleFormControlInput2" name="username" required>
+        </div>
+        
+        <div class="mb-3">
+        <label for="exampleFormControlInput1" class="form-label">Email address</label>
+        <input type="email" class="form-control" id="exampleFormControlInput1" name="email" required>
+        </div>
 
-    <button type="submit">Submit</button>
+        <div class="mb-3">
+        <label for="inputPassword5" class="form-label">Password</label>
+        <input type="password" id="inputPassword5" class="form-control" name="password" aria-describedby="passwordHelpBlock"  required>
+        <div id="passwordHelpBlock" class="form-text">
+            Your password must be 8-20 characters long.
+        </div>
+        </div>
+
+        <div class="mb-3">
+        <label for="cpass" class="form-label">Confirm Password</label>
+        <input type="password" id="cpass" name="cpass" class="form-control" aria-describedby="passwordHelpBlock" required>
+        <div id="passwordHelpBlock1" class="form-text">
+            Your password must be 8-20 characters long.
+        </div>
+        </div>
+
+
+        <button class="btn btn-primary" type="submit">Submit</button>
+
+
+        <div id="already" class="form-text">
+            Already have an account? <a style = "text-decoration: none;" href= "{{ url_for('auth.login') }}">Login now</a>
+        </div>
+    </div>
 </form>
 
 {% endblock %}

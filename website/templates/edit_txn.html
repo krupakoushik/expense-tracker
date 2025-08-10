@@ -24,7 +24,7 @@
         <select name="category_id" value="{{ txn.category.name }}">
             {% for cat in categories %}
                 <option value="{{ cat.id }}" {% if txn.category_id == cat.id %}selected{% endif %}>
-                    {{ cat.name }}
+                    {{ cat.name.lower() }}
                 </option>
             {% endfor %}
         </select><br><br>

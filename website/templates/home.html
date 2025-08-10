@@ -4,10 +4,8 @@
 
 {% block content %}
 
-    <h1 align="center">Hello {{ current_user.username.upper() }}!</h1>
-    <p align="center">💰 Current Balance: {{ balance }}</p>
-
-    <button onclick="toggleForm()" id="toggleBtn">➕ Add Transaction</button>
+    <h1 align="center">Hello {{ current_user.username.capitalize() }}!</h1>
+    <p align="center"><small class="text-body-secondary">💰 Current Balance: </small><b>{{ balance }}</b></p>
 
     <div id="addForm" style="display:none; margin-top: 10px; border: 1px solid #ccc ; padding: 15px">
     <form method="POST" action="{{ url_for('views.home') }}">
@@ -40,31 +38,50 @@
     </form>
     </div>
 
-    <table width="100%">
-        <caption><b>All Transactions</b></caption>
+    <table class="table">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="mb-0"><b>All Transactions</b></h4>
+            <a href="#" class="btn">
+                <button onclick="toggleForm()" id="toggleBtn">➕ Add Transaction</button>
+            </a>
+        </div>
+        <thead align="center" class="table-dark">
         <tr>
-            <th>ID</th>
-            <th>Date</th>
-            <th>Type</th>
-            <th>Amount</th>
-            <th>Category</th>
-            <th>Note</th>
-            <th>Actions</th>
+            <th scope="col">ID</th>
+            <th scope="col">Date</th>
+            <th scope="col">Type</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Category</th>
+            <th scope="col">Note</th>
+            <th scope="col">Actions</th>
         </tr>
+        </thead>
+        <tbody class="table-group-divider" align="center">
         {% for t in transaction %}
         <tr>
             <th>{{ t.id }}</th>
             <th>{{ t.txn_date.strftime('%d-%m-%Y') if t.txn_date else '' }}</th>
-            <th>{{ t.txn }}</th>
+            <th>{{ t.txn.capitalize() }}</th>
             <th>{{ t.amount }}</th>
-            <th>{{ t.category.name }}</th>
-            <th>{{ t.note }}</th>
             <th>
-                <a href="/edit/{{ t.id }}">Edit</a>
-                <a href="/delete/{{ t.id }}">Delete</a>
+                <form method="POST" action="{{ url_for('views.update_category', id=t.id) }}">
+                    <select name="category_id" class="form-select form-select-sm" onchange="this.form.submit()">
+                        {% for c in categories %}
+                            <option value="{{ c.id }}" {% if t.category_id == c.id %}selected{% endif %}>
+                                {{ c.name.capitalize() }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </form>
+            </th>
+            <th>{{ t.note.capitalize() }}</th>
+            <th>
+                <a class="btn btn-dark btn-sm" href="/edit/{{ t.id }}" role="button">Edit</a>
+                <a class="btn btn-dark btn-sm" href="/delete/{{ t.id }}" role="button">Delete</a>
             </th>
         </tr>
         {% endfor %}
+        </tbody>
     </table>
 
 

@@ -12,6 +12,7 @@ views = Blueprint('views', __name__)
 def home():
     transactions = Transaction.query.filter_by(user_id=current_user.id).order_by(Transaction.txn_date.desc()).all()
 
+
     balance = 0
     for t in transactions:
         if t.txn == "CREDIT":
@@ -86,6 +87,40 @@ def categories():
     cats = Category.query.filter(Category.user_id == current_user.id, Category.name != 'None').all()
     return render_template('categories.html', categories=cats, user=current_user)
 
+
+@views.route('categories/delete/<int:id>')
+@login_required
+def categoriesdel(id):
+
+    cat_id = Category.query.get_or_404(id)
+
+    if cat_id.user_id != current_user.id:
+        flash("You are not allowed to delete this category!", category='error')
+        return redirect(url_for('views.categories'))
+
+    db.session.delete(cat_id)
+    db.session.commit()
+    
+    flash("Cateopry Deleted Successfully!", category='success')
+    return redirect(url_for('views.categories'))
+
+@views.route('/update-category/<int:id>', methods=['POST'])
+@login_required
+def update_category(id):
+    txn = Transaction.query.get_or_404(id)
+
+    if txn.user_id != current_user.id:
+        flash("You are not allowed to edit this transaction!", category='error')
+        return redirect(url_for('views.home'))
+
+    category_id = request.form.get('category_id')
+    txn.category_id = int(category_id) if category_id else None
+
+    db.session.commit()
+    flash("Category updated successfully!", category='success')
+    return redirect(url_for('views.home'))
+
+
 @views.route('/edit/<int:id>', methods = ['GET', 'POST'])
 @login_required
 def edit(id):
@@ -138,3 +173,21 @@ def delete(id):
     
     flash("Transaction Deleted Successfully!", category='success')
     return redirect(url_for('views.home'))
+
+
+@views.route('/investments')
+@login_required
+def investments(id):
+    pass
+
+
+@views.route('/stats')
+@login_required
+def stats(id):
+    pass
+
+
+@views.route('/goal')
+@login_required
+def goals(id):
+    pass

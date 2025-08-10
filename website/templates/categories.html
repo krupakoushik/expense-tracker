@@ -18,8 +18,14 @@
 
     <ul id="categories">
         {% for cat in categories %}
-            <li>{{ cat.name }}</li>
+            <li>
+                {{ cat.name }}
+                <a href="{{ url_for('views.categoriesdel', id=cat.id) }}">Delete</a>
+            </li>
+            
         {% endfor %}
     </ul>
+
+
 
 {% endblock %}

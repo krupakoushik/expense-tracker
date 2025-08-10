@@ -27,8 +27,8 @@ def login():
     
     return render_template('login.html', user=current_user)
 
-@auth.route('/sign-up', methods=['GET', 'POST'])
-def signup():
+@auth.route('/register', methods=['GET', 'POST'])
+def register():
     if request.method == 'POST':
         username = (request.form.get('username')).strip()
         email = (request.form.get('email')).strip()
