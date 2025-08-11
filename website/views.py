@@ -21,74 +21,64 @@ def home():
             balance -= t.amount
 
 
-#add
-    if request.method == 'POST':
-        txn_date = request.form.get('date')
-        txn = request.form.get('txn')
-        amount = request.form.get('amount')
-        category_id = request.form.get('category_id')
-        note = request.form.get('note')
 
-#amount
-        try:
-            amount = float(amount)
-        except ValueError:
-            flash("Invalid Amount!", category='error')
+    if request.method == 'POST':
+        form_type = request.form.get('form_type')
+
+        if form_type == "transaction":
+            txn_date = request.form.get('date')
+            txn = request.form.get('txn')
+            amount = request.form.get('amount')
+            category_id = request.form.get('category_id')
+            note = request.form.get('note')
+
+            try:
+                amount = float(amount)
+            except (ValueError, TypeError):
+                flash("Invalid Amount!", category='error')
+                return redirect(url_for('views.home'))
+
+            if txn_date:
+                try:
+                    txn_date = datetime.strptime(txn_date, "%Y-%m-%d")
+                except ValueError:
+                    flash("Invalid date format. Use YYYY-MM-DD.", category="error")
+                    return redirect(url_for('views.home'))
+            else:
+                txn_date = None
+
+            category_id = int(category_id) if category_id else None
+
+            new_txn = Transaction(
+                txn_date=txn_date,
+                amount=amount,
+                txn=txn,
+                category_id=category_id,
+                note=note,
+                user_id=current_user.id
+            )
+            db.session.add(new_txn)
+            db.session.commit()
+            flash("Transaction added!", category="success")
             return redirect(url_for('views.home'))
 
-#date
-        if txn_date:
-            try:
-                txn_date = datetime.strptime(txn_date, "%Y-%m-%d")
-            except ValueError:
-                flash("Invalid date format. Use DD-MM-YYYY.", category="error")
-                return redirect(url_for('views.home'))
-        else:
-            txn_date = None
+        elif form_type == "category":
+            category = request.form.get('category').strip()
+            if category:
+                new_cat = Category(name=category, user_id=current_user.id)
+                db.session.add(new_cat)
+                db.session.commit()
+                flash("Category created successfully!", category="success")
+            else:
+                flash("Category name cannot be empty.", category="error")
+            return redirect(url_for('views.home'))
 
-
-#category
-        category_id = int(category_id) if category_id else None
-
-
-        new_txn = Transaction(
-            txn_date = txn_date,
-            amount=amount,
-            txn = txn,
-            category_id = category_id,
-            note=note,
-            user_id = current_user.id
-        )
-        db.session.add(new_txn)
-        db.session.commit()
-
-        flash("Transaction added!", category="success")
-        return redirect(url_for('views.home'))
 
     categories = Category.query.filter_by(user_id=current_user.id).all()
     return render_template('index.html', transaction=transactions, categories=categories, balance=balance, user=current_user)
 
-@views.route('/categories', methods=['GET', 'POST'])
-@login_required
-def categories():
-    if request.method == "POST":
-        category = request.form.get('category').strip().upper()
 
-        if category:
-            new_cat = Category(name=category, user_id=current_user.id)
-            db.session.add(new_cat)
-            db.session.commit()
-            flash('Category created successfully!', category='success')
-        else:
-            flash('Category name cannot be empty.', category='error')
-
-        return redirect(url_for('views.categories'))
-
-    cats = Category.query.filter(Category.user_id == current_user.id, Category.name != 'None').all()
-    return render_template('categories.html', categories=cats, user=current_user)
-
-
-@views.route('categories/delete/<int:id>')
+@views.route('/cdelete/<int:id>')
 @login_required
 def categoriesdel(id):
 
@@ -96,13 +86,13 @@ def categoriesdel(id):
 
     if cat_id.user_id != current_user.id:
         flash("You are not allowed to delete this category!", category='error')
-        return redirect(url_for('views.categories'))
+        return redirect(url_for('views.home'))
 
     db.session.delete(cat_id)
     db.session.commit()
     
     flash("Cateopry Deleted Successfully!", category='success')
-    return redirect(url_for('views.categories'))
+    return redirect(url_for('views.home'))
 
 @views.route('/update-category/<int:id>', methods=['POST'])
 @login_required

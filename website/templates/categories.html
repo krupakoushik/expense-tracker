@@ -4,27 +4,7 @@
 
 {% block content %}
 
-    <h1 align="center">Categories</h1>
 
-    <div id="categoryadd">
-    <form method="POST" action="{{ url_for('views.categories') }}">
-
-        <input type="text" name="category" required>
-
-        <input type="submit" value="Add Category">
-
-    </form>
-    </div>
-
-    <ul id="categories">
-        {% for cat in categories %}
-            <li>
-                {{ cat.name }}
-                <a href="{{ url_for('views.categoriesdel', id=cat.id) }}">Delete</a>
-            </li>
-            
-        {% endfor %}
-    </ul>
 
 
 
