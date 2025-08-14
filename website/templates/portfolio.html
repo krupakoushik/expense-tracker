@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Portfolio{% endblock %}
+
+{% block content %}
+    <h1 align="center">Portfolio</h1>
+
+    <form method="POST">
+    <input type="text" name="cryp" id="cryp">
+    <input type="submit">
+    </form>
+
+    {% for name, price_info in crypto.items() %}
+
+    {{ price_info.inr }}
+
+    {% endfor %}
+
+{% endblock %}

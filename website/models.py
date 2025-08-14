@@ -30,3 +30,4 @@ class Transaction(db.Model):
     __table_args__ = (
         CheckConstraint("txn IN ('CREDIT', 'DEBIT')", name="check_txn_type"),
     )
+

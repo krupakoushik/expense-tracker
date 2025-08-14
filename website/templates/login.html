@@ -4,11 +4,12 @@
 
 {% block content %}
 
-<form method="POST">
-    
+<form method="POST" class="h-100 d-grid align-items-center justify-content-center">
+    <div>
     <h2 align="center">Login</h2>
-    
-    <div class="d-grid">
+    </div>
+
+    <div>
         
         <div class="mb-3">
         <label for="exampleFormControlInput1" class="form-label">Email address</label>
@@ -20,7 +21,7 @@
         <input type="password" id="inputPassword5" name="password" class="form-control" aria-describedby="passwordHelpBlock" required>
         </div>
         
-        <button class="btn btn-primary" type="submit">Login</button>
+        <button class="btn btn-dark" type="submit">Login</button>
 
         <div id="new" class="form-text">
             Don't have an account? <a style = "text-decoration: none;" href= "{{ url_for('auth.register') }}">Register now</a>
