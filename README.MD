@@ -68,7 +68,7 @@ A peek into Kubera’s clean UI (CoinGecko-inspired):
 
 ```bash
 # 1) clone
-git clone https://github.com/<you>/kubera.git
+git clone https://github.com/krupakoushik/kuberra-finance-tool.git
 cd kubera
 
 # 2) create venv
@@ -81,7 +81,22 @@ pip install -r requirements.txt
 
 # 4) env
 cp .env.example .env
-# fill values (see below)
+
+---
+
+## 🤝 Contributing  
+
+Contributions are welcome!  
+- Fork the repo, create a feature branch, and open a PR.  
+- For major changes, please open an issue first to discuss what you’d like to change.  
+
+---
+
+## 📜 License  
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)  
+
+This project is licensed under the **MIT License** — you’re free to use, copy, modify, and distribute with attribution.  
 
 # 5) run
 flask --app main.py --debug run
