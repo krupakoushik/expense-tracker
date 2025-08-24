@@ -1,19 +1,338 @@
-{% extends "base.html" %}
+{% extends "base.html" %} 
 
-{% block title %}Portfolio{% endblock %}
+{% block title %}Home{% endblock %}
+
+
 
 {% block content %}
-    <h1 align="center">Portfolio</h1>
 
-    <form method="POST">
-    <input type="text" name="cryp" id="cryp">
-    <input type="submit">
-    </form>
+    <h1 align="center">Hello {{ current_user.username.capitalize() }}!</h1>
+    <p class="text-center text-light">
+    <small>Current Balance: </small><b>₹{{ "{:,.2f}".format(balance) }}</b><br>
+    <small>Total Invested: </small><b>₹{{ "{:,.2f}".format(total_invested) }}</b><br>
+    <small>Total PnL: </small>
+    <b class="{{ 'text-success' if total_pnl >= 0 else 'text-danger' }}">
+        ₹{{ "{:,.2f}".format(total_pnl) }}
+        {% if total_pnl_pct is not none %} 
+            ({{ "{:,.2f}".format(total_pnl_pct) }}%)
+        {% endif %}
+    </b>
+    </p>
 
-    {% for name, price_info in crypto.items() %}
 
-    {{ price_info.inr }}
 
-    {% endfor %}
+    <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="mb-0"><b>Portfolio</b></h4>
+
+            
+            <div class="d-flex gap-2">
+                <button type="button" class="btn btn-dark fw-bold" data-bs-toggle="modal" data-bs-target="#addCoinForm">
+                    <i class="fa-solid fa-plus"></i> Add coin
+                </button>
+            </div>
+    </div>
+
+
+    <!--Add Coins Modal-->
+    <div id="addCoinForm" class="modal fade" data-bs-theme="dark" tabindex="-1" aria-labelledby="CoinModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+
+                        <!-- Modal header -->
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="CoinModalLabel">Add Coins</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                            <!-- Search (GET same route) -->
+                            <form method="GET" action="{{ url_for('views.portfolio') }}" class="mb-2">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="q" name="q"
+                                    value="{{ request.args.get('q','') }}" placeholder="Search">
+                                <label for="q">Search</label>
+                            </div>
+                            </form>
+
+                            <!-- Results + Add (POST same route) -->
+                            <form method="POST" action="{{ url_for('views.portfolio') }}" class="d-grid gap-2">
+                            <div class="list-group" style="max-height: 360px; overflow: auto;">
+                                {% if coins %}
+                                    {% for c in coins %}
+                                    <label class="list-group-item d-flex align-items-center gap-2">
+                                        <input class="form-check-input me-2" type="checkbox" name="cg_ids" value="{{ c.id }}">
+                                        <img src="{{ c.image or c.small or c.thumb }}" class="rounded" width="20" height="20" alt="">
+                                        <span>{{ c.name }} ({{ c.symbol|upper }})</span>
+                                    </label>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="text-center text-body-secondary py-3">
+                                    No results. Try searching a coin name.
+                                    </div>
+                                {% endif %}
+                            </div>
+
+
+                            <button type="submit" class="btn btn-outline-success fw-bold">
+                                <i class="fa-solid fa-check"></i> Add Coins
+                            </button>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+    </div>
+
+    <!-- Buy/Sell Modal -->
+    <div id="addCryptoTransactionForm" class="modal fade" data-bs-theme="dark" tabindex="-1" aria-labelledby="CointransactionModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+
+                        <!-- Modal header -->
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="transactionModalLabel">Add Transaction</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+
+                            <ul class="nav bg-dark border-bottom border-body nav-underline justify-content-evenly d-flex align-items-center p-2" role="tablist">
+                                <li class="nav-item theme-light" role="presentation">
+                                    <button class="nav-link active" id="buy-tab"
+                                            data-bs-toggle="tab" data-bs-target="#buy-pane"
+                                            type="button" role="tab" aria-controls="buy-pane" aria-selected="true">
+                                    Buy
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="sell-tab"
+                                            data-bs-toggle="tab" data-bs-target="#sell-pane"
+                                            type="button" role="tab" aria-controls="sell-pane" aria-selected="false">
+                                    Sell
+                                    </button>
+                                </li>
+                            </ul>
+                            
+                        <div class="tab-content mt-3">
+                            
+                            <!-- Buy Forms -->
+                            <div class="tab-pane fade show active" id="buy-pane" role="tabpanel" aria-labelledby="buy-tab">
+                            <form method="POST" action="{{ url_for('views.trade') }}">
+                                <input type="hidden" name="form_type" value="crypto_buy">
+
+                                <div class="mb-3">
+                                    <label for="buyCoin" class="form-label">Coin</label>
+                                    <select class="form-select" id="buyCoin" name="coin_id" required>
+                                        {% for h in crypto %}
+                                            {% set c = coins_map.get(h.coin.cg_id) %}
+                                            {% if c %}
+                                                <!-- IMPORTANT: use DB coin id, not CoinGecko id -->
+                                                <option value="{{ h.coin.id }}">{{ h.coin.coin }} ({{ h.coin.symbol|upper }})</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="total_spent" class="form-label">Total Spent</label>
+                                    <input type="number" 
+                                    step="0.01" 
+                                    min="0" 
+                                    inputmode="decimal" 
+                                    class="form-control" 
+                                    id="total_spent" 
+                                    name="total_spent" 
+                                    required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="buyQuantity" class="form-label">Quantity</label>
+                                    <input type="number" 
+                                    step="0.00000001" 
+                                    min="0" 
+                                    inputmode="decimal"
+                                    class="form-control" 
+                                    id="buyQuantity" 
+                                    name="quantity" 
+                                    required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="buyPrice" class="form-label">Price per coin</label>
+                                    <input type="number" 
+                                    step="0.01" 
+                                    min="0" 
+                                    inputmode="decimal" 
+                                    class="form-control"  
+                                    id="buyPrice" 
+                                    name="price_per_coin" 
+                                    required>
+                                </div>
+
+                                <div class="mb-3">
+                                <label for="DateTime" class="form-label">Date & Time</label>
+                                <input type="datetime-local" 
+                                class="form-control" 
+                                id="DateTime" 
+                                name="datetime" 
+                                required>
+                                </div>
+
+                                <button type="submit" class="btn btn-success">Add Transaction</button>
+                            </form>
+                            </div>
+
+
+                            <!-- Sell Forms -->
+                            <div class="tab-pane fade" id="sell-pane" role="tabpanel" aria-labelledby="sell-tab">
+                                <form method="POST" action="{{ url_for('views.trade') }}">
+                                    <input type="hidden" name="form_type" value="crypto_sell">
+
+                                    <div class="mb-3">
+                                        <label for="sellCoin" class="form-label">Coin</label>
+                                        <select class="form-select" id="sellCoin" name="coin_id" required>
+                                            {% for h in crypto %}
+                                            {% set c = coins_map.get(h.coin.cg_id) %}
+                                            {% if c %}
+                                            <option value="{{ h.coin.id }}">
+                                                <img src="{{ c.image or c.small or c.thumb }}" class="rounded" width="20" height="20" alt=""> 
+                                                {{ h.coin.coin }} ({{ h.coin.symbol|upper }})</option>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="total_received" class="form-label">Total Received</label>
+                                        <input type="number" step="0.01" min="0" inputmode="decimal" class="form-control" id="total_received" name="total_received" required>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="sellQuantity" class="form-label">Quantity</label>
+                                        <input type="number" step="0.00000001" min="0" inputmode="decimal" class="form-control" id="sellQuantity" name="quantity" required>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="sellPrice" class="form-label">Price per coin</label>
+                                        <input type="number" step="0.01" min="0" inputmode="decimal" class="form-control" id="sellPrice" name="price_per_coin" required>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="sellDateTime" class="form-label">Date & Time</label>
+                                        <input type="datetime-local" class="form-control" id="sellDateTime" name="datetime" required>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-success">Add Transaction</button>
+                                
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+    </div>
+
+
+
+
+    <!-- Portfolio Table -->
+    <table class="table table-hover table-dark align-items-center">
+        <thead align="center" class="table-dark">
+        <tr>
+            <th scope="col" class="text-start">#</th>
+            <th scope="col" class="text-start">Coin</th>
+            <th scope="col" class="text-end">Price</th>
+            <th scope="col" class="text-end">24h</th>
+            <th scope="col" class="text-end">Holdings</th>
+            <th scope="col" class="text-end">PnL</th>
+            <th scope="col">Actions</th>
+        </tr>
+        </thead>
+        <tbody class="table-group-divider" align="center">
+        {% for h in crypto %}
+            {% set c = coins_map.get(h.coin.cg_id) %}
+            {% if c %}
+            <tr>
+                <td class="text-start">{{ c.market_cap_rank if c.market_cap_rank is not none else '–' }}</td>
+                
+                <td class="text-start">
+                <div class="d-flex align-items-center">
+                    {% set img = c.image or c.small or c.thumb %}
+                    <img src="{{ img }}" width="20" height="20" class="me-2" alt="{{ h.coin.coin }} logo">
+                    <span class="me-1 fw-semibold">{{ h.coin.coin }}</span>
+                    <small class="text-secondary">({{ h.coin.symbol|upper }})</small>
+                </div>
+                </td>
+                
+                <td class="text-end">₹{{ "{:,.2f}".format(c.current_price) }}</td>
+                
+                <td class="text-end text-{{ 'success' if c.price_change_percentage_24h >= 0 else 'danger' }}">
+                {% if c.price_change_percentage_24h >= 0 %}
+                    <i class="fa-solid fa-caret-up"></i>
+                {% else %}
+                    <i class="fa-solid fa-caret-down"></i>
+                {% endif %}
+                {{ "{:,.1f}".format(c.price_change_percentage_24h) }}%
+                </td>
+
+                {% set calc = calc_map.get(h.coin_id) %}
+                {% set cpr = c.current_price %}
+
+                <td class="text-end">
+                ₹{{ "{:,.2f}".format(calc.value) }}<br>
+                <small class="text-end">{{ calc.qty|fmtqty(8) }} {{ h.coin.symbol|upper }}</small>
+                </td>
+
+                <td class="text-end">
+                ₹{{ "{:,.2f}".format(calc.pnl) }}<br>
+                {% if calc.pnl_pct is not none %}
+                    <small class="text-{{ 'success' if calc.pnl >= 0 else 'danger' }}">
+                    {% if calc.pnl >= 0 %}<i class="fa-solid fa-caret-up"></i>{% else %}<i class="fa-solid fa-caret-down"></i>{% endif %}
+                    {{ "{:,.2f}".format(calc.pnl_pct) }}%
+                    </small>
+                {% endif %}
+                </td>
+
+                <td>
+                <button type="button" class="btn btn-dark fw-bold"
+                        data-bs-toggle="modal" data-bs-target="#addCryptoTransactionForm">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+                <div class="dropdown d-inline">
+                    <button class="btn btn-dark fw-bold" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-dark">
+                    <li>
+                        <form method="POST" action="{{ url_for('views.remove_coin', coin_id=h.coin_id) }}">
+                            <button class="dropdown-item">
+                            Remove Coin
+                            </button>
+                        </form>
+                    </li>
+                    <li><a href="{{ url_for('views.trades', coin_id = h.coin_id) }}" class="dropdown-item">View Transactions</a></li>
+                    </ul>
+                </div>
+                </td>
+            </tr>
+            {% endif %}
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+{% if request.args.get('q') %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    new bootstrap.Modal(document.getElementById('addCoinForm')).show();
+});
+</script>
+{% endif %}
+
+
+
 
 {% endblock %}

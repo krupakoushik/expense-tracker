@@ -5,7 +5,7 @@
 {% block content %}
 
     <h1 align="center">Hello {{ current_user.username.capitalize() }}!</h1>
-    <p align="center"><small class="text-body-secondary">Current Balance: </small><b>{{ balance }}</b></p>
+    <p align="center"><small>Current Balance: </small><b>₹{{ "{:,.2f}".format(balance) }}</b></p>
 
 
     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -13,17 +13,17 @@
 
             
             <div class="d-flex gap-2">
-                <button type="button" class="btn btn-outline-dark fw-bold" data-bs-toggle="modal" data-bs-target="#categoryModal">
+                <button type="button" class="btn btn-dark fw-bold" data-bs-toggle="modal" data-bs-target="#categoryModal">
                     <i class="fa-solid fa-plus"></i> Cat
                 </button>
-                <button type="button" class="btn btn-outline-dark fw-bold" data-bs-toggle="modal" data-bs-target="#addForm">
+                <button type="button" class="btn btn-dark fw-bold" data-bs-toggle="modal" data-bs-target="#addForm">
                     <i class="fa-solid fa-plus"></i> Add
                 </button>
             </div>
     </div>
 
     <!--Add Transaction Modal-->
-    <div id="addForm" class="modal fade" tabindex="-1" aria-labelledby="transactionModalLabel" aria-hidden="true">
+    <div id="addForm" class="modal fade" data-bs-theme="dark" tabindex="-1" aria-labelledby="transactionModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
 
@@ -97,7 +97,6 @@
                             <!-- Add Category Form -->
                             <form method="POST" action="{{ url_for('views.home') }}" class="d-grid gap-3" id="categoryForm">
                                 <input type="hidden" name="form_type" id="category_form_type" value="category">
-                                <input type="hidden" name="form_type" id="categorry_form_type" value="rename-category">
                                 <input type="hidden" name="category_idd" id="category_idd" value="">
                                 
                                 <div class="form-floating">
@@ -161,7 +160,7 @@
                 <form method="POST" action="{{ url_for('views.home') }}">
                     <input type="hidden" name="form_type" value="transaction">
                     <input type="hidden" name="transaction_id" value="{{ t.id }}">
-                    <select name="category_id" class="form-select form-select-sm" onchange="this.form.submit()">
+                    <select name="category_id" class="form-select form-select-sm bg-dark text-light" onchange="this.form.submit()">
                         {% for c in categories %}
                             <option value="{{ c.id }}" {% if t.category_id == c.id %}selected{% endif %}>
                                 {{ c.name.capitalize() }}
@@ -173,7 +172,7 @@
             <td class="text-truncate" style="max-width: 300px;">{{ t.note }}</td>
             <td>
                 <a href="#"
-                class="btn btn-outline-warning btn-sm edit-transaction-btn"
+                class="btn btn-dark btn-sm edit-transaction-btn"
                 data-id="{{ t.id }}"
                 data-date="{{ t.txn_date.strftime('%Y-%m-%d') }}"
                 data-txn="{{ t.txn }}"
@@ -184,7 +183,7 @@
                 </a>
 
                 <a href="/delete/{{ t.id }}"
-                class="btn btn-outline-danger btn-sm">
+                class="btn btn-dark btn-sm">
                 <i class="fa-solid fa-trash"></i>
                 </a>
             </td>
@@ -196,16 +195,33 @@
 
 
     <script>
-    document.addEventListener('click', function(e) {
-        if (e.target.closest('.rename-cat-btn')) {
-            const btn = e.target.closest('.rename-cat-btn');
-            document.getElementById('categorry_form_type').value = 'rename-category';
-            document.getElementById('category_idd').value = btn.dataset.id;
-            document.getElementById('category_name').value = btn.dataset.name;
-            document.getElementById('category_label').textContent = 'Rename Category';
-            document.getElementById('category_btn').innerHTML = '<i class="fa-solid fa-check"></i> Rename';
-        }
+
+    document.addEventListener('click', function (e) {
+    const btn = e.target.closest('.rename-cat-btn');
+    if (!btn) return;
+    e.preventDefault();
+
+    document.getElementById('category_idd').value = btn.dataset.id;
+    document.getElementById('category_name').value = btn.dataset.name;
+
+    document.getElementById('category_label').textContent = 'Rename Category';
+    document.getElementById('category_btn').innerHTML = '<i class="fa-solid fa-check"></i> Rename';
+
+    document.getElementById('category_name').focus();
     });
+
+
+    document.getElementById('categoryModal').addEventListener('show.bs.modal', function (e) {
+    const triggeredByRename = e.relatedTarget && e.relatedTarget.classList.contains('rename-cat-btn');
+    if (triggeredByRename) return;
+
+    document.getElementById('category_idd').value = '';
+    document.getElementById('category_name').value = '';
+    document.getElementById('category_label').textContent = 'New Category';
+    document.getElementById('category_btn').innerHTML = '<i class="fa-solid fa-check"></i> Add';
+    });
+
+
 
     document.addEventListener('click', function(e) {
         if (e.target.closest('.edit-transaction-btn')) {

@@ -11,19 +11,19 @@
 
     <div>
         
-        <div class="mb-3">
-        <label for="exampleFormControlInput1" class="form-label">Email address</label>
-        <input type="email" class="form-control" name="email" id="exampleFormControlInput1" required>
+        <div class="form-floating mb-3">
+        <input type="email" class="form-control" name="email" id="floatingInputd" placeholder="name@example.com" required>
+        <label for="floatingInputd">Email address</label>
         </div>
-        
-        <div class="mb-3">
-        <label for="inputPassword5" class="form-label">Password</label>
-        <input type="password" id="inputPassword5" name="password" class="form-control" aria-describedby="passwordHelpBlock" required>
-        </div>
-        
-        <button class="btn btn-dark" type="submit">Login</button>
 
-        <div id="new" class="form-text">
+        <div class="form-floating mb-3">
+        <input type="password" id="flaotingPassword" name="password" class="form-control" placeholder="Password" required>
+        <label for="flaotingPassword">Password</label>
+        </div>
+        
+        <button class="btn btn-secondary" type="submit">Login</button>
+
+        <div id="new" class="form-text text-light">
             Don't have an account? <a style = "text-decoration: none;" href= "{{ url_for('auth.register') }}">Register now</a>
         </div>
 
