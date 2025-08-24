@@ -1,15 +1,19 @@
 from flask import Flask, url_for
 from flask_sqlalchemy import SQLAlchemy
 from os import path
+import os
+from dotenv import load_dotenv
 from flask_login import LoginManager
 from decimal import Decimal
+
+load_dotenv()
 
 db = SQLAlchemy()
 NAME = "database.db"
 
 def create_app():
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = 'duckthisshitimout'
+    app.config['SECRET_KEY'] = os.getenv("SECRET_KEY", "").strip()
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{NAME}'
     db.init_app(app)
 

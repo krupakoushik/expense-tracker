@@ -394,7 +394,8 @@ def portfolio():
         realized_total=realized_total,
         total_pnl=total_pnl,
         total_pnl_pct=total_pnl_pct,
-        calc_map=calc_map, 
+        calc_map=calc_map,
+        market_rows=market_rows,
     )
 
 
@@ -487,7 +488,7 @@ def trade():
 @views.route('/portfolio/remove_coin/<coin_id>', methods=['POST'])
 @login_required
 def remove_coin(coin_id):
-    h = Holding.query.filter_by(user_id=current_user.id, coin_id=coin_id).first()
+    h = Holding.query.filter_by(user_id=current_user.id, coin_id=coin_id).all()
     if h:
         db.session.delete(h)
         db.session.commit()
