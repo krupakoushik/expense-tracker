@@ -81,6 +81,10 @@ pip install -r requirements.txt
 
 # 4) env
 cp .env.example .env
+
+# 5) run
+flask --app main.py --debug run
+# app: http://127.0.0.1:5000
 ```
 
 ---
@@ -98,7 +102,3 @@ Contributions are welcome!
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)  
 
 This project is licensed under the **MIT License** — you’re free to use, copy, modify, and distribute with attribution.  
-
-# 5) run
-flask --app main.py --debug run
-# app: http://127.0.0.1:5000
