@@ -1,4 +1,5 @@
-# Kubera — expense + crypto tracker
+# Kubera — finance tool  
+> minimal, clean, self-hosted personal finance + crypto tracker  
 
 ## 👤 Author & Links
 
@@ -7,55 +8,63 @@
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Krupa%20Koushik-0A66C2?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/krupa-koushik-kona-355708296/)  
 [![X](https://img.shields.io/badge/X-@krupakoushikk-111?logo=x&logoColor=white)](https://x.com/krupakoushikk)
 
+---
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB.svg?logo=python&logoColor=white)](#)
-[![Flask](https://img.shields.io/badge/Flask-2.x-000000.svg?logo=flask&logoColor=white)](#)
-[![SQLite](https://img.shields.io/badge/SQLite-3-003B57.svg?logo=sqlite&logoColor=white)](#)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](#license)
-[![PRs welcome](https://img.shields.io/badge/PRs-welcome-ff69b4.svg)](#contributing)
+## 🛠️ Tech Stack  
 
-a minimal personal finance app with:
-- 💸 **expense tracker** (+ custom categories)
-- ₿ **crypto portfolio** (live prices via CoinGecko)
-- 🧾 **trade ledger** (FIFO PnL + holdings)
-- 🔐 auth + per‑user data
-
-> built with Flask + SQLite. inspired by CoinGecko’s clean portfolio UX.
+[![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB.svg?logo=python&logoColor=white)](#) 
+[![Flask](https://img.shields.io/badge/Flask-2.x-000000.svg?logo=flask&logoColor=white)](#) 
+[![SQLite](https://img.shields.io/badge/SQLite-3-003B57.svg?logo=sqlite&logoColor=white)](#) 
+[![Bootstrap](https://img.shields.io/badge/Bootstrap-5-7952B3.svg?logo=bootstrap&logoColor=white)](#) 
+[![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E.svg?logo=javascript&logoColor=white)](#) 
+[![CoinGecko API](https://img.shields.io/badge/CoinGecko%20API-v3-48A348.svg?logo=coingecko&logoColor=white)](https://www.coingecko.com/en/api)
 
 ---
 
-## ✨ screenshots
+## 💡 About  
 
-| login | dashboard | modal (add transaction) | modal (category) | portfolio | trades | modal (coin) | modal (buy/sell) |
+Kubera is a minimal personal finance app with:  
+- 💸 **Expense tracker** (+ custom categories)  
+- ₿ **Crypto portfolio** (live prices via CoinGecko)  
+- 🧾 **Trade ledger** (FIFO PnL + holdings)  
+- 🔐 Auth + per-user data  
+
+> Built with Flask + SQLite. Inspired by CoinGecko’s clean portfolio UX.
+
+---
+
+## ✨ Screenshots  
+
+A peek into Kubera’s clean UI (CoinGecko-inspired):
+
+| login | dashboard | add transaction | category | portfolio | trades | add coin | buy/sell |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| ![login](images/login.png) | ![dashboard](images/dashboard.png) | ![modal](images/transactions.png) | ![modal](images/category.png) | ![portfolio](images/portfolio.png) | ![trades](images/cryptotransactions.png) | ![modal](images/addcoin.png) | ![modal](images/cryptoaddtransaction.png) |
-
-> add more as you like. files live under `images/`.
+| ![login](images/login.png) | ![dashboard](images/dashboard.png) | ![transaction](images/transactions.png) | ![category](images/category.png) | ![portfolio](images/portfolio.png) | ![trades](images/cryptotransactions.png) | ![addcoin](images/addcoin.png) | ![buy/sell](images/cryptoaddtransaction.png) |
 
 ---
 
-## 🧱 features
+## 🧱 Features  
 
-- categories CRUD (per user)
-- add/edit/delete transactions
-- add coins from CoinGecko search/trending
-- per‑coin holdings with **FIFO** unrealized/realized PnL
-- trade page with FIFO PnL per sell, average cost, totals
-- simple caching for market data (Pro key optional)
-
----
-
-## 🗺️ roadmap
-
-- 📊 budgeting per category (monthly caps + alerts)
-- 🎯 savings goals (time‑bound plans, progress bars)
-- 📈 visualizations (pandas/matplotlib or Chart.js)
-- 🧠 “insights” (OpenAI) — spending patterns, goal nudges, basic investing hygiene
-- 🔔 email/Discord/webhook notifications
+- Categories CRUD (per user)  
+- Add/edit/delete transactions  
+- Add coins from CoinGecko search/trending  
+- Per-coin holdings with **FIFO** unrealized/realized PnL  
+- Trade page with FIFO PnL per sell, average cost, totals  
+- Simple caching for market data (Pro key optional)  
 
 ---
 
-## 🚀 quickstart
+## 🗺️ Roadmap  
+
+- 📊 Budgeting per category (monthly caps + alerts)  
+- 🎯 Savings goals (time-bound plans, progress bars)  
+- 📈 Visualizations (pandas/matplotlib or Chart.js)  
+- 🧠 “Insights” (OpenAI) — spending patterns, goal nudges, basic investing hygiene  
+- 🔔 Email/Discord/webhook notifications  
+
+---
+
+## 🚀 Quickstart  
 
 ```bash
 # 1) clone
