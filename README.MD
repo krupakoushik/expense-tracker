@@ -26,9 +26,9 @@ a minimal personal finance app with:
 
 ## ✨ screenshots
 
-| portfolio | trades | modal (buy/sell) |
-| --- | --- | --- |
-| ![portfolio](images/image1.png) | ![trades](images/image2.png) | ![modal](images/image3.png) |
+| login | dashboard | modal (add transaction) | modal (category) | portfolio | trades | modal (coin) | modal (buy/sell) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| ![login](images/login.png) | ![dashboard](images/dashboard.png) | ![modal](images/transactions.png) | ![modal](images/category.png) | ![portfolio](images/portfolio.png) | ![trades](images/cryptotransactions.png) | ![modal](images/addcoin.png) | ![modal](images/cryptoaddtransactions.png) |
 
 > add more as you like. files live under `images/`.
 
