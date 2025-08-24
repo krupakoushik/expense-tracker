@@ -81,6 +81,7 @@ pip install -r requirements.txt
 
 # 4) env
 cp .env.example .env
+```
 
 ---
 
